@@ -1,15 +1,17 @@
+/*
+  Warnings:
+
+  - Added the required column `description` to the `Book` table without a default value. This is not possible if the table is not empty.
+
+*/
 -- RedefineTables
-PRAGMA defer_foreign_keys=ON;
-PRAGMA foreign_keys=OFF;
 CREATE TABLE "new_Book" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "title" TEXT NOT NULL,
     "author" TEXT NOT NULL,
     "published" INTEGER NOT NULL,
-    "description" TEXT NOT NULL DEFAULT 'No description'
+    "description" TEXT NOT NULL
 );
 INSERT INTO "new_Book" ("author", "id", "published", "title") SELECT "author", "id", "published", "title" FROM "Book";
 DROP TABLE "Book";
-ALTER TABLE "new_Book" RENAME TO "Book";
-PRAGMA foreign_keys=ON;
-PRAGMA defer_foreign_keys=OFF;
+EXEC sp_rename 'new_Book', 'Book';
