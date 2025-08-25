@@ -17,22 +17,30 @@ export const getBookById=async(req,res)=>{
 };
 
 export const createBook= async(req,res)=>{
-    const{title,author,published}=req.body;
+    const{title,author,published,description}=req.body;
 
     if(isEmpty(title) ||isEmpty(author)||isEmpty(published)){
-        return res.status(400).send("All fields are required");
+        return res.status(400).send("Please fill all required fields");
     }
     const newBook= await BookModel.create({
       title: capitalizeFirstLetters(title),
       author: capitalizeFirstLetters(author),
       published,
+      description: description 
     });
     res.status(201).json(newBook);
 };
 
 export const updateBook=async(req,res)=>{
     try{
-        const updatedBook=await BookModel.update(req.params.id,req.body);
+        const {title,author,published,description}= req.body;
+        if(!title||!author||!published){
+            return res.status(400).send("Please fill all required fields");
+        }
+        const updatedBook=await BookModel.update(req.params.id,{
+            ...req.body,
+            description: description||"No description",
+        });
         res.json(updatedBook);
     }catch{
         res.status(404).send("Book not found");
