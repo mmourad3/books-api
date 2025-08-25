@@ -18,4 +18,5 @@ model Book {
   title     String
   author    String
   published Int
+  description String @default("No description")
 }
